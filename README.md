@@ -1,123 +1,149 @@
-🔐 Two-Factor Authentication (2FA) App
+# Project Title
 
-A full-stack Two-Factor Authentication (2FA) web application built using FastAPI (Python) for the backend and Vue.js 3 for the frontend.
+Two-Factor Authentication (2FA) App
 
-The application allows users to register, log in, and optionally enable Time-based One-Time Password (TOTP) authentication using authenticator apps such as Google Authenticator or Authy.
+>
+This project is a Two-Factor Authentication (2FA) web application with a backend built using FastAPI (Python) and MySQL, and a separate frontend developed with Vue.js.The backend serves JSON APIs for user authentication and 2FA management, while the frontend handles the user interface and navigation. User credentials and 2FA secrets are stored in a MySQL database.
 
-🎯 Objective
-
+>
+# Objective
 The goal of this project is to design and implement a secure authentication system that:
-
-Supports user registration and login
-
-Stores passwords securely using hashing
-
-Allows users to enable Two-Factor Authentication
-
-Requires OTP verification for 2FA-enabled users
-
-Provides protected routes for authenticated users
-
+- Supports user registration and login
+- Stores passwords securely using hashing
+- Allows users to enable Two-Factor Authentication
+- Requires OTP verification for 2FA-enabled users
+- Provides protected routes for authenticated users
 This project demonstrates backend API design, security best practices, database integration, and frontend-backend communication.
 
-🎥 Demo Video
-
+# Demo Video
 Watch the complete working demo here:
+#### drive-link : (https://drive.google.com/file/d/1vfprHcD3i_ClW2_HMfltK4w3KltZCW-O/view?usp=sharing)
+---
+### The video demonstrates:
+- User Registration
+- Login without 2FA
+- Enabling Two-Factor Authentication
+- Scanning QR code with authenticator app
+- Login using OTP
+- Accessing Dashboard
 
-https://your-demo-video-link-here
+# Screenshots
+- Registration Page
+- Login Page
+- Dashboard
+- Enable 2FA
+- OTP Verification
 
+## Tech Stack
 
-The video demonstrates:
+### Backend
+🔹 FastAPI (Python)
+FastAPI is used to build high-performance REST APIs quickly with automatic documentation.
+It supports async operations, making backend services fast and scalable.
 
-User Registration
+🔹 MySQL (PyMySQL)
+MySQL stores structured application data reliably and efficiently.
+PyMySQL allows Python applications to connect and execute SQL queries easily.
 
-Login without 2FA
+🔹 pyotp
+pyotp generates time-based one-time passwords for two-factor authentication.
+It adds an extra security layer to user login systems.
 
-Enabling Two-Factor Authentication
+🔹 qrcode
+qrcode generates QR codes for sharing OTP secrets or links.
+It simplifies setup of authenticator apps.
 
-Scanning QR code with authenticator app
+🔹 passlib (bcrypt)
+passlib securely hashes and verifies passwords.
+bcrypt protects against brute-force and rainbow table attacks.
 
-Login using OTP
+🔹 python-dotenv
+Loads environment variables from a .env file.
+Keeps sensitive credentials out of source code.
 
-Accessing Dashboard
+🔹 uvicorn
+ASGI server used to run FastAPI applications.
+Provides fast, lightweight, and production-ready performance.
 
-🖼️ Screenshots
-🔹 Registration Page
+🔹 starlette sessions
+Manages user sessions and cookies.
+Helps maintain login state across requests.
 
-🔹 Login Page
+🔹 FastAPI CORS Middleware
+Allows frontend and backend to communicate across domains.
+Prevents browser CORS errors.
 
-🔹 Dashboard
+### Frontend
+🔹 Vue.js 3
+Used to build interactive and reactive user interfaces.
+Provides component-based structure and high performance.
 
-🔹 Enable 2FA
+🔹 Vue Router
+Handles client-side navigation between pages.
+Enables single-page application routing.
 
-🔹 OTP Verification
+🔹 Axios
+Sends HTTP requests from frontend to backend.
+Handles API communication easily.
 
-🧰 Tech Stack
-Backend
+🔹 Vite
+Fast development server and build tool.
+Provides instant hot reload and optimized builds.
 
-FastAPI (Python)
+## Database Setup
 
-MySQL (PyMySQL)
+This authentication app relies on a MySQL database to store user credentials and related data.
 
-pyotp
+1. Create the Database
+2. Create a `users` table for storing user credentials:
+   - The table includes:
+     - `id` INT
+     - `username` VARCHAR(150)
+     - `password_hash` VARCHAR(255)
+     - `secret` VARCHAR(255)
+     - `is_2fa_enabled` BOOLEAN DEFAULT FALSE
+     - `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+3. Create a `.env` file in the project root directory to store database credentials.
+4. Ensure the `.env` file is added to `.gitignore`.
+5. The app uses the `pymysql` library to connect to MySQL. The connection is managed via a dependency (`get_db`) in the FastAPI application.
+6. Run the FastAPI app using `uvicorn` to ensure the database setup works.
+7. Access the registration page via the frontend and attempt to register a user.
 
-qrcode
+## Environment Configuration
 
-passlib (bcrypt)
+Create a `.env` file in the project root (this file must NOT be committed — add it to `.gitignore`). Example `.env` contents:
 
-python-dotenv
-
-uvicorn
-
-starlette sessions
-
-fastapi CORS middleware
-
-Frontend
-
-Vue.js 3
-
-Vue Router
-
-Axios
-
-Vite
-
-🗄️ Database Setup
-
-Create database:
-
-CREATE DATABASE twofa_db;
-
-
-Create table:
-
-CREATE TABLE users (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    username VARCHAR(150) UNIQUE,
-    password_hash VARCHAR(255),
-    secret VARCHAR(255),
-    is_2fa_enabled BOOLEAN DEFAULT FALSE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-🔐 Environment Configuration
-
-Create .env file in root:
-
+```
 DB_HOST=localhost
 DB_USER=twofa_user
 DB_PASSWORD=strong_password
-DB_NAME=twofa_db
-SECRET_KEY=a_long_random_secret
+DB_NAME=database
+SECRET_KEY=a_long_random_secret_for_sessions_or_signing
+```
 
+Add `.env` to `.gitignore`:
 
-Add to .gitignore:
-
+```
 .env
+```
 
-📁 Project Structure
-auth-project/
+Load `.env` in code:
+```python
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+DB_HOST = os.getenv("DB_HOST")
+DB_USER = os.getenv("DB_USER")
+DB_PASSWORD = os.getenv("DB_PASSWORD")
+DB_NAME = os.getenv("DB_NAME")
+SECRET_KEY = os.getenv("SECRET_KEY")
+```
+
+## Project Structure
+
+```
+     auth-project/
 ├── backend/
 │   ├── main.py
 │   ├── database.py
@@ -140,126 +166,104 @@ auth-project/
     │   │   ├── Setup2FA.vue
     │   └── main.js
     ├── package.json
-    └── vite.config.js
+    └── vite.config.js  
+```
 
-🔁 API Design
-Method	Endpoint	Description
-POST	/register	Register user
-POST	/login	Login user
-POST	/enable-2fa	Generate QR
-POST	/verify-2fa	Verify OTP
-GET	/logout	Logout
-Sample Response
-{
-  "message": "Success",
-  "redirect": "/dashboard"
-}
+## API Design
 
-🔐 2FA Flow
-Registration
+### Clear Separation of Concerns
+- The backend serves JSON APIs instead of rendering HTML, allowing a distinct frontend to consume them.
+- Endpoints that retrieve data or forms return JSON (e.g., GET `/register`, GET `/login`).
+- Endpoints that perform changes use POST and return JSON with a `redirect` field for frontend navigation (e.g., POST `/register`, POST `/login`).
 
-User enters username & password
+### HTTP Verbs
+- GET: Retrieval of initial form data or dashboard info (e.g., `/register`, `/dashboard`).
+- POST: Actions like registration, login, enabling 2FA, and verifying 2FA (e.g., `/register`, `/verify_2fa`).
+- GET: Logout action (e.g., `/logout`).
 
-Password hashed and stored
+### Protection of Sensitive Flows
+- Endpoints modifying authentication state (e.g., `/login`, `/enable_2fa`, `/verify_2fa`) return appropriate JSON responses with `message` and `redirect` fields.
+- Success responses include a `redirect` to guide the frontend.
+- Failures return a `message` with an error (e.g., "Invalid username or password") and a `redirect` back to the form.
 
-Enable 2FA
+### 2FA Flow (TOTP)
+- **User Registration**: User provides username and password. Password is hashed and stored.
+- **Enable 2FA**: 
+  - User logs in, requests 2FA setup via `/enable_2fa`.
+  - Backend generates a TOTP secret (`pyotp.random_base32()`), stores it in `secret`, and returns a QR code (base64 via `qrcode`).
+  - User scans the QR code with an authenticator app and submits the first TOTP code.
+  - Backend verifies the code with `pyotp.TOTP(otp_secret).verify(code)` and sets `is_2fa_enabled` to `true`.
+- **Login with 2FA**: 
+  - After verifying username/password, if `is_2fa_enabled` is `true`, the backend redirects to `/verify_2fa`.
+  - User enters the TOTP code, which the backend verifies before establishing the session.
 
-Backend generates secret
+## Setup Instructions
 
-QR code created
+### Backend Setup
+1. Install Python dependencies:
+   ```bash
+   pip install fastapi uvicorn pyotp qrcode[pil] pymysql python-dotenv passlib[bcrypt] starlette
+   ```
+2. Configure `.env` with MySQL credentials.
+3. Run the backend:
+   ```bash
+   uvicorn app:app --host localhost --port 8000 --reload
+   ```
 
-User scans QR
+### Frontend Setup
+1. Navigate to `frontend/`:
+   ```bash
+   cd version2/frontend
+   ```
+2. Install Node.js dependencies:
+   ```bash
+   npm install
+   ```
+3. Run the frontend development server:
+   ```bash
+   npm run dev
+   ```
+4. Access the app at `http://localhost:5173/`.
 
-User enters OTP
-
-Backend verifies and enables 2FA
-
-Login With 2FA
-
-Username & password verified
-
-OTP required
-
-OTP validated
-
-Dashboard accessible
-
-⚙️ Backend Setup
-pip install fastapi uvicorn pyotp qrcode[pil] pymysql python-dotenv passlib[bcrypt] starlette
-
-
-Run backend:
-
-uvicorn main:app --reload
-
-
-Backend URL:
-
-http://localhost:8000
-
-
-API Docs:
-
-http://localhost:8000/docs
-
-🎨 Frontend Setup
-cd frontend
-npm install
-npm run dev
+- Test the full flow in the browser at `http://localhost:5173/`.
 
 
-Frontend URL:
 
-http://localhost:5173
+### Overview
+- **Application Components**:
+  - **Backend**: FastAPI-based API for user registration, login, and 2FA management.
+  - **Frontend**: Vue.js application served via Nginx.
+  - **Database**: MySQL 8.0 for storing user data.
 
-🧪 Testing Checklist
+- **Software**:
+  - Python 3.11 (for local backend development).
+  - Node.js and npm (for local frontend development).
 
-Register user
 
-Login user
 
-Enable 2FA
+## Test the Application
+- Frontend Testing
+Open the application in your browser: 
+  `http://localhost:5173/`
+Verify that the user interface loads correctly.
 
-Scan QR
+- Backend Testing
+Open API documentation:
+`http://localhost:8000/docs`
+Confirm that all API endpoints are accessible.
+#### User Authentication Testing
+Register a new user.
+Log in using username/password and verify Two-Factor Authentication (2FA).
 
-Enter OTP
+- Database Verification
+Run the following query:
+`SELECT * FROM users;`
+Verify that user records are stored correctly.
 
-Logout
+### Conclusion
+This project demonstrates a secure Two-Factor Authentication system using FastAPI, MySQL, and Vue.js. It follows best practices for password hashing, OTP-based verification, and frontend-backend separation. The application is accessible at `http://localhost:5173/` (frontend) and `http://localhost:8000` (backend API).
 
-Login with OTP
 
-🔒 Security Practices
-
-Password hashing with bcrypt
-
-Secrets stored securely
-
-Environment variables
-
-OTP-based authentication
-
-🤖 Use of AI Tools
-
-AI tools such as ChatGPT and Grok were used for:
-
-Understanding TOTP concepts
-
-Generating boilerplate code
-
-Debugging issues
-
-Writing documentation
-
-All final logic and integration were implemented manually.
-
-🚀 Future Enhancements
-
-JWT authentication
-
-Email verification
-
-Password reset
-
-Rate limiting
-
-UI enhancements
+## Use of AI Tools
+- GROK
+- CHATGPT
